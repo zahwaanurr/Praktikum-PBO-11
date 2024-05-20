@@ -1,17 +1,27 @@
-def full_name_decorator(func):
-    def wrapper(first_name, last_name, title, nim):
-        full_name = func(first_name, last_name, title)
-        return f"Full Name: {full_name} {nim}"
+import functools
+
+def display_info_decorator(func):
+    @functools.wraps(func)
+    def wrapper(self, *args, **kwargs):
+        full_name = func(self, *args, **kwargs)
+        return f"Full Name: {full_name} {self.nim}"
     return wrapper
 
-@full_name_decorator
-def format_name(first_name, last_name, title):
-    return f"{title} {first_name} {last_name}"
+class Person:
+    def __init__(self, first_name, last_name, title, nim):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.title = title
+        self.nim = nim
 
-# Contoh penggunaan
+    @display_info_decorator
+    def get_full_name(self):
+        return f"{self.title} {self.first_name} {self.last_name}"
+
 first_name = "Zahwa"
 last_name = "Nur Azkia Putri"
 title = "Mrs."
 nim = "064002300038"
 
-print(format_name(first_name, last_name, title, nim))
+person = Person(first_name, last_name, title, nim)
+print(person.get_full_name())
